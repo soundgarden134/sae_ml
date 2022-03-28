@@ -6,7 +6,7 @@ import my_utility as ut
 
 # Beginning ...
 def main():			
-	xv,yv  = ut.load_data_csv('dtest.csv')
+	xv,yv  = ut.load_data_csv('data/dtest.csv')
 	W      = ut.load_w_dl()
 	zv     = ut.forward_dl(xv,W)      		
 	ut.metricas(yv,zv) 	

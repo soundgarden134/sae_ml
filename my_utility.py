@@ -15,11 +15,11 @@ def iniW(next,prev):
     return(w)
 
 # STEP 1: Feed-forward of AE
-def forward_ae(...):
-    ...         
-    return(a) 
-
+def forward_ae():  
+    ...       
+    return(a)
 #Activation function
+
 def act_sigmoid(z):
     return(1/(1+np.exp(-z)))   
 # Derivate of the activation funciton
@@ -27,35 +27,33 @@ def deriva_sigmoid(a):
     return(a*(1-a))
 
 # STEP 2: Feed-Backward
-def gradW_ae(...):    
-    ...
+def gradW_ae():    
     return()    
 
 # Update W of the AE
-def updW_ae(...):
-    ...
+def updW_ae():
     return(W)
 
 # Softmax's gradient
 def grad_softmax(x,y,w,lambW):    
-    ...    
+
     return(gW,Cost)
 
 # Calculate Softmax
 def softmax(z):
-        ....
+
         return(...)
 
 # Feed-forward of the DL
 def forward_dl(x,W):        
-    ...    
+  
     return(zv)
     
 
 
 # Métrica
-def metricas(...):
-    ...    
+def metricas():
+  
     return()
     
 #Confusion matrix
@@ -65,29 +63,39 @@ def confusion_matrix():
 # Configuration of the DL 
 #-----------------------------------------------------------------------
 def load_config():      
-    ...
-    return(...)
+    sae_path = 'data/cnf_sae.csv'
+    softmax_path = 'data/cnf_softmax.csv'
+    
+    config_sae = pd.read_csv(sae_path, header=None)
+    config_softmax = pd.read_csv(softmax_path, header=None)
+    
+    return(config_sae, config_softmax)
 
 # Binary Label from raw data 
 def Label_binary():
-    ...  
+ 
     return()
 
 # Load data 
-def load_data_csv():
-    ...  
-    return(...)
+def load_data_csv(path):
+    data = pd.read_csv(path, header=None)
+    xe = data.iloc[:-1, :]
+    ye = data.iloc[-1, :]
+
+
+
+    return(xe,ye)
 
 # save weights of both SAE and Costo of Softmax
 def save_w_dl():    
-    ....
+    return()
         
     
 #load weight of the DL in numpy format
 def load_w_dl():
-    ...
+
     return()    
 
 # save weights in numpy format
 def save_w_npy():  
-    ....
+    return()
