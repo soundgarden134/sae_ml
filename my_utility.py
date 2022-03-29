@@ -15,9 +15,10 @@ def iniW(next,prev):
     return(w)
 
 # STEP 1: Feed-forward of AE
-def forward_ae():  
-    ...       
-    return(a)
+def forward_ae(w, x):
+    z_1 = np.matmul(x,np.transpose(w))
+    a_1 = act_sigmoid(z_1)
+    return(a_1)
 #Activation function
 
 def act_sigmoid(z):
@@ -27,11 +28,13 @@ def deriva_sigmoid(a):
     return(a*(1-a))
 
 # STEP 2: Feed-Backward
-def gradW_ae():    
+def gradW_ae(a_2, x):   
+    c_n = 1/2 * np.sum((a_2 - x)**2)
     return()    
 
 # Update W of the AE
-def updW_ae():
+def updW_ae(w, learning_rate, error, xe):
+    W = 0  
     return(W)
 
 # Softmax's gradient
@@ -45,9 +48,12 @@ def softmax(z):
         return(...)
 
 # Feed-forward of the DL
-def forward_dl(x,W):        
+def forward_dl(a,w_2):        
   
-    return(zv)
+    z_2 = np.matmul(np.transpose(a),np.transpose(w_2))
+    a_2 = act_sigmoid(z_2)
+    
+    return(a_2)
     
 
 
@@ -79,9 +85,9 @@ def Label_binary():
 # Load data 
 def load_data_csv(path):
     data = pd.read_csv(path, header=None)
-    xe = data.iloc[:-1, :]
-    ye = data.iloc[-1, :]
-
+    data = np.transpose(data)
+    xe = data.iloc[:, :-1]
+    ye = data.iloc[:, -1]
 
 
     return(xe,ye)
