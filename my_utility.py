@@ -34,39 +34,53 @@ def gradW_ae(a_2, x):
     return(E, c_n)    
 
 
-
-
 # Update W of the AE
 def updW_ae(W, learning_rate, E, xe, A, Z):
 
     delta_2 = E * deriva_sigmoid(Z[2])
     derivative = np.dot(delta_2.astype(float), np.transpose(A[1].astype(float)))
+    derivative = derivative.clip(-1,1)
     W[2] = W[2] - learning_rate*derivative
-    
+    print("E:"+str(np.mean(E)))
+#    print(np.mean(learning_rate*derivative))
+    delta_1 = np.dot(np.transpose(W[2]), delta_2) * deriva_sigmoid(Z[1])
+    derivative_2 = np.dot(delta_1, np.transpose(xe))
+    derivative_2 = derivative_2.clip(-1,1)
+    W[1] = W[1] - learning_rate*derivative_2
+    return(W)
+
+
+def updW_ae2(W, learning_rate, xe, A, Z):
+
+    E = np.sqrt((A[2] - A[0]))
+    delta_2 = E * deriva_sigmoid(Z[2])
+    derivative = np.dot(delta_2.astype(float), np.transpose(A[1].astype(float)))
+    W[2] = W[2] - learning_rate*derivative
+
     delta_1 = np.dot(np.transpose(W[2]), delta_2) * deriva_sigmoid(Z[1])
     derivative_2 = np.dot(delta_1, np.transpose(xe))
     W[1] = W[1] - learning_rate*derivative_2
     return(W)
 
-def updW_ae(w1,u,T,a1,a2):
-    #decoder
-    g = np.cross((a1 - a2),deriva_sigmoid(np.dot(w1,a1)))
-    d = np.dot(g,np.power(a1,T))
-    w2 = w1  - np.dot(u,d)
-    return(w2)
 
 
 # Softmax's gradient 
-def grad_softmax(xe,y,w,lambW, A, learning_rate):    
-    Cost = (1/xe.shape[1])*np.sum(np.sum(ye*np.log(A) + lambW/2 * np.linalg.norm(w)))
-    derivative = (-1/xe.shape[1])*((y-A) + np.transpose(xe))+lambW*w 
-    gW = w - learning_rate*derivative
-    return(gW,Cost)
+def grad_softmax(a,ye, Ws, Xr, penalty_rate, learning_rate): 
+    num_samples = ye.shape[0]
+    num_classes = ye.shape[1]
+    cost = np.zeros(num_samples)
+    for i in range(num_samples):
+        for j in range(num_classes):
+            cost[i] += ye[i][j] * np.log(a[i,j]) 
+    gW = (-1/num_samples) * np.dot(Xr, ye-a) + penalty_rate* Ws[1] 
+
+    return cost, gW
 
 # Calculate Softmax
 def softmax(z):
-    a_n = z/np.sum(z)
-    return()
+    exp = np.exp(z)
+    return exp/np.sum(exp)
+
 
 # Feed-forward of the DL
 def forward_dl(a,w_2):        
@@ -113,6 +127,7 @@ def load_data_csv(path):
     xe = data.iloc[:-1, :]
     ye = data.iloc[-1, :]
     ye = pd.get_dummies(ye) #one hot encoder
+    ye = np.array(ye)
 
     return(xe,ye)
 
