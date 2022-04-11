@@ -7,7 +7,7 @@ import my_utility as ut
 # Beginning ...
 def main():			
 	xv,yv  = ut.load_data_csv('data/dtest.csv')
-	W      = ut.load_w_dl()
+	W      = ut.load_w_dl('data/w_dl.npz')
 	zv     = ut.forward_dl(xv,W)      		
 	ut.metricas(yv,zv) 	
 	
