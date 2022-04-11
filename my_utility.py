@@ -69,7 +69,7 @@ def forward_softmax(Xr, W):
     return a
 
 # Softmax's gradient 
-def grad_softmax(a,ye, Ws, Xr, penalty_rate, learning_rate): 
+def grad_softmax(a,ye, Ws, Xr, penalty_rate): 
     num_samples = ye.shape[0]
     num_classes = ye.shape[1]
     cost = np.zeros(num_samples)
@@ -98,38 +98,57 @@ def forward_dl(x, W):
 
 # Métrica
 def metricas(yv, zv):
+    num_classes = yv.shape[1]
+    confusion_matrix = create_confusion_matrix(yv,zv)
+    precision = np.zeros(yv.shape[1])
+    recall = np.zeros(yv.shape[1])
+    f_score = np.zeros(yv.shape[1])
+    accuracy = np.zeros(yv.shape[1])
     
-    precision = 1
-    recall = 1
-    f_score = 1
-    accuracy = 1
-    return()
+    for i in range(yv.shape[1]): #por cada clase
+        tp = np.sum(np.diag(confusion_matrix))
+        fp = np.sum(np.sum(confusion_matrix, axis = 0)) - tp
+        fn = np.sum(np.sum(confusion_matrix, axis = 1)) - tp
+        tn = []
+        for j in range(num_classes):
+            temp = np.delete(confusion_matrix, j, 0)    # delete ith row
+            temp = np.delete(temp, j, 1)  # delete ith column
+            tn.append(sum(sum(temp)))
+        precision[i] = tp/(tp+fp)
+        recall[i] = tp/(tp+fn)
+        f_score[i] = 2 * (precision[i]*recall[i])/(precision[i] + recall[i])
+        accuracy[i] = (tp + tn[i])/(tp + fp + tn[i] + fn)
+    print("Precision:" + str(precision))
+    print("Recall:" + str(recall))
+    print("F score:" + str(f_score))
+    print("Accuracy:" + str(accuracy))
+
+
     
 #Confusion matrix
-def confusion_matrix(yv, zv):  
+def create_confusion_matrix(yv, zv):  
     confusion_matrix = np.zeros((yv.shape[1], yv.shape[1]))
-    for row in zv:
-        max_num = -9999
-        max_index = -1
-        current_index = 0
-        for num in row:
-            if num > max_num:
-                max_num = num
-                max_index = current_index
-            current_index += 1
-        current_index = 0
-        for num in row:
-            if current_index == max_index:
-                # num = 1
-                row[current_index] = 1
+    zv = make_prediction(zv)
+    for i in range(yv.shape[0]):
+        pred = np.argmax(zv[i])
+        real_y = np.argmax(yv[i])
+        confusion_matrix[pred, real_y] += 1
+        
+    print(confusion_matrix)
+    return confusion_matrix
+
+def make_prediction(zv):
+
+    for i in range(zv.shape[0]):
+        max_index = np.argmax(zv[i])
+        for j in range(zv.shape[1]):
+            if max_index == j:
+                zv[i,j] = 1
             else:
-                # num = 0
-                row[current_index] = 0
-            current_index += 1
+                zv[i,j] = 0
+    return zv
         
-                
-        
-    return(confusion_matrix)
+    
 #-----------------------------------------------------------------------
 # Configuration of the DL 
 #-----------------------------------------------------------------------

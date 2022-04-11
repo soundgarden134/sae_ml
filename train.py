@@ -15,11 +15,8 @@ def train_softmax(Xr,ye,p_sft):
     Ws = {1: ut.iniW(Xr.shape[0], ye.shape[1])}
     
     for i in range(num_iter):
-        
-        z = np.dot(np.transpose(Xr),Ws[1])    
-        a = ut.softmax(z)
         a = ut.forward_softmax(Xr, Ws[1])
-        cost, gW = ut.grad_softmax(a,ye, Ws,Xr, penalty_rate, learning_rate)
+        cost, gW = ut.grad_softmax(a,ye, Ws,Xr, penalty_rate)
         Ws[1] = Ws[1] - learning_rate*gW
 
         
@@ -46,10 +43,6 @@ def train_ae(input_nodes, num_nodes, num_iter, learning_rate):
         E, c_n = ut.gradW_ae(A[2], input_nodes)
         W = ut.updW_ae(W, learning_rate, E, input_nodes, A, Z) #c_n o E?
 
-
-    
-    
-    
     return W[1], A   
 
 
